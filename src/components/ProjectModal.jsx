@@ -3,6 +3,16 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import MouseMousepadComparison from './MouseMousepadComparison';
 
 export default function ProjectModal({ project, isOpen, onClose }) {
+    // Responsive: stack graphics above text for all screens below 1280px (landscape & portrait)
+    const [isStacked, setIsStacked] = useState(false);
+    useEffect(() => {
+      function handleStackedResize() {
+        setIsStacked(window.innerWidth < 1280);
+      }
+      handleStackedResize();
+      window.addEventListener('resize', handleStackedResize);
+      return () => window.removeEventListener('resize', handleStackedResize);
+    }, []);
   // Early return if project is null to prevent errors and black screen
   if (!project) return null;
 
@@ -116,97 +126,56 @@ export default function ProjectModal({ project, isOpen, onClose }) {
   }
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/98 min-h-screen"
-          style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-          onClick={onClose}
-          onWheel={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
-        >
-          {/* Noise Texture */}
-          <div 
-            className="pointer-events-none fixed inset-0 opacity-20 mix-blend-overlay"
-            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }}
-          />
-
-          {/* Close Button */}
-          <motion.button
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            onClick={onClose}
-            className="fixed top-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/60 transition-all hover:border-white/40 hover:text-white hover:scale-110"
-          >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </motion.button>
-
-          {/* Main Modal Content: Side-by-side layout */}
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 60 }}
-            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative z-10 w-full bg-black flex flex-col md:flex-row max-h-screen overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/98 min-h-screen"
+            style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+            onClick={onClose}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
           >
-            {/* Left: Visuals */}
-            <div className="w-full md:w-1/2 flex items-center justify-center p-2 md:p-8 rounded-t-2xl min-h-0" style={{minHeight: '220px', height: '70vh', maxHeight: '80vh', justifyContent: 'center', alignItems: 'center'}}>
-              {/* Mouse + Mousepad 3D Render: comparison slider */}
-              {project.title && project.title.trim().toLowerCase().includes('mouse + mousepad 3d render') ? (
-                <div className="w-full h-full flex items-center justify-center" style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <MouseMousepadComparison />
-                </div>
-              ) : hasMultipleImages ? (
-                <div className="relative w-full h-full flex items-center justify-center" style={{width: '100%', height: '100%', minHeight: '220px', maxHeight: '80vh'}}>
-                  {imagesToShow.map((img, idx) => {
-                    const isActive = currentImageIndex === idx;
-                    useEffect(() => {
-                      if (isActive) {
-                        const imgEl = document.createElement('img');
-                        imgEl.src = img;
-                        if (imgEl.complete) {
-                          loadedImagesRef.current[img] = true;
-                          setImageLoaded(true);
-                        }
-                      }
-                    }, [img, isActive]);
-                    return (
-                      <img
-                        key={img}
-                        src={img}
-                        alt={project.title}
-                        onLoad={isActive ? handleImageLoad : undefined}
-                        className={
-                          `object-contain absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 will-change-opacity bg-black rounded-2xl ` +
-                          (isNaturrausch ? 'w-full z-20' : 'w-full z-10') +
-                          `${isActive && imageLoaded ? ' opacity-100' : ' opacity-0'}`
-                        }
-                        style={{ pointerEvents: 'none', width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', minWidth: '320px', minHeight: '180px', background: 'black', display: 'block' }}
-                      />
-                    );
-                  })}
-                  {/* Loading indicator */}
-                  {!imageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center z-20">
-                      <svg className="animate-spin h-12 w-12 text-accent" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle className="opacity-20" cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="6" />
-                        <path d="M44 24c0-11.046-8.954-20-20-20" stroke="currentColor" strokeWidth="6" strokeLinecap="round" className="opacity-80" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className={isNaturrausch ? 'w-full flex items-center justify-center' : 'w-full flex items-center justify-center'} style={{justifyContent: 'center', alignItems: 'center'}}>
-                  {/* Static image, responsive layout */}
-                  <div className="relative w-full h-full flex items-center justify-center">
+            {/* Noise Texture */}
+            <div 
+              className="pointer-events-none fixed inset-0 opacity-20 mix-blend-overlay"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
+            />
+
+            {/* Close Button */}
+            <motion.button
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              onClick={onClose}
+              className="fixed top-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/60 transition-all hover:border-white/40 hover:text-white hover:scale-110"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </motion.button>
+
+            {/* Main Modal Content: Responsive layout */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 60 }}
+              transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+              onClick={(e) => e.stopPropagation()}
+              className={`relative z-10 w-full bg-black flex flex-col ${isStacked ? '' : 'xl:flex-row'} max-h-screen overflow-y-auto`}
+            >
+              {/* Graphics above text for tablet/mobile */}
+              <div className={`w-full ${isStacked ? '' : 'xl:w-1/2'} flex items-center justify-center p-2 xl:p-8 rounded-t-2xl min-h-0`} style={{minHeight: '220px', height: '70vh', maxHeight: '80vh', justifyContent: 'center', alignItems: 'center'}}>
+                {/* Mouse + Mousepad 3D Render: comparison slider */}
+                {project.title && project.title.trim().toLowerCase().includes('mouse + mousepad 3d render') ? (
+                  <div className="w-full h-full flex items-center justify-center" style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <MouseMousepadComparison />
+                  </div>
+                ) : (
+                  <div className="relative w-full h-full flex items-center justify-center" style={{width: '100%', height: '100%', minHeight: '220px', maxHeight: '80vh'}}>
                     {imagesToShow.map((img, idx) => {
                       const isActive = currentImageIndex === idx;
                       useEffect(() => {
@@ -226,11 +195,11 @@ export default function ProjectModal({ project, isOpen, onClose }) {
                           alt={project.title}
                           onLoad={isActive ? handleImageLoad : undefined}
                           className={
-                            `object-contain transition-opacity duration-700 will-change-opacity bg-black rounded-2xl mx-auto ` +
+                            `object-contain absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 will-change-opacity bg-black rounded-2xl ` +
                             (isNaturrausch ? 'w-full z-20' : 'w-full z-10') +
                             `${isActive && imageLoaded ? ' opacity-100' : ' opacity-0'}`
                           }
-                          style={{ pointerEvents: 'none', width: '100%', height: '100%', maxWidth: '100vw', maxHeight: '80vh', minWidth: '320px', minHeight: '180px', background: 'black', display: 'block' }}
+                          style={{ pointerEvents: 'none', width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', minWidth: '320px', minHeight: '180px', background: 'black', display: 'block' }}
                         />
                       );
                     })}
@@ -244,13 +213,12 @@ export default function ProjectModal({ project, isOpen, onClose }) {
                       </div>
                     )}
                   </div>
-                </div>
-              )}
-            {/* Close missing div for left visual section */}
-            </div>
+                )}
+              {/* Close missing div for left visual section */}
+              </div>
 
-            {/* Right: Info/Text */}
-            <div className="w-full md:w-1/2 flex flex-col justify-start p-2 md:p-6 xl:p-8 min-h-0 h-full flex-grow overflow-y-auto" style={{maxHeight: '100vh'}}>
+              {/* Text below graphics for tablet/mobile */}
+              <div className={`w-full ${isStacked ? '' : 'xl:w-1/2'} flex flex-col justify-start p-2 xl:p-8 min-h-0 h-full grow overflow-y-auto`} style={{maxHeight: '100vh'}}>
               {/* Header Row */}
               <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                 {/* Title & Category */}

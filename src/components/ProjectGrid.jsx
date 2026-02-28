@@ -110,6 +110,7 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
           className={`group relative ${aspect} w-full overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-700/60
                      transition-colors duration-700 ease-out
                      hover:border-neutral-500/40`}
+          style={{ padding: '24px' }}
         >
           {/* Neutral Background Gradient */}
           <div className="absolute inset-0 bg-linear-to-br from-neutral-800 via-neutral-900 to-neutral-950"> 
@@ -122,16 +123,16 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
                   <img
                     src={new URL('../assets/projects/Wedding Flyer/Wedding Fyler Cover.png', import.meta.url).href}
                     alt="Wedding Flyer Cover"
-                    className={`absolute transition-all duration-500 z-10 ${showWeddingGif ? 'opacity-0' : 'opacity-100'}`}
+                    className={`absolute transition-all duration-500 z-10 w-full h-full max-w-full max-h-full object-contain ${showWeddingGif ? 'opacity-0' : 'opacity-100'}`}
                     style={{
-                      width: 'min(420px, 80%)',
-                      height: 'min(420px, 80%)',
-                      right: '10%',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      objectFit: 'contain',
-                      filter: 'drop-shadow(0 4px 32px rgba(0,0,0,0.25))',
                       pointerEvents: 'none',
+                      boxShadow: 'none',
+                      transform: 'scale(0.85)',
+                      left: 0,
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      margin: 'auto',
                     }}
                     draggable={false}
                   />
@@ -140,14 +141,11 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
                     <img
                       src={weddingGif}
                       alt="Wedding Flyer Animation"
-                      className="absolute transition-all duration-500 z-20"
+                      className="absolute transition-all duration-500 z-20 w-full h-full max-w-full max-h-full object-contain"
                       style={{
-                        width: 'min(520px, 95%)',
-                        height: 'min(520px, 95%)',
                         right: '0%',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        objectFit: 'contain',
                         filter: 'drop-shadow(0 8px 48px rgba(0,0,0,0.35))',
                         pointerEvents: 'none',
                       }}
@@ -164,22 +162,14 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
                         alt={project.title}
                         className={
                           `object-contain rounded-2xl absolute left-0 top-0 right-0 bottom-0 m-auto transition-opacity duration-700 will-change-opacity ` +
-                          (isNaturrausch
-                            ? 'h-[95%] w-[95%] md:h-[98%] md:w-[98%] z-20 group-hover:scale-110'
-                            : isDashboardPrototype
-                              ? 'h-[65%] w-[65%] md:h-[70%] md:w-[70%] z-10 group-hover:scale-105'
-                            : isKoestlinMockup
-                              ? 'h-[45%] w-[45%] md:h-[70%] md:w-[70%] z-10 group-hover:scale-105'
-                            : isVHSAalen
-                              ? 'h-[98%] w-[98%] md:h-[99%] md:w-[99%] z-20 group-hover:scale-110'
-                              : 'h-[75%] w-[75%] z-10 group-hover:scale-105') +
+                          'w-full h-full max-w-full max-h-full object-contain rounded-2xl absolute left-0 top-0 right-0 bottom-0 m-auto transition-opacity duration-700 will-change-opacity z-10 group-hover:scale-105' +
                           `${currentImageIdx === idx && imageLoaded ? ' opacity-100' : ' opacity-0'}`
                         }
+                             style={{ pointerEvents: 'none', boxShadow: 'none', transform: 'scale(0.8)' }}
                         loading="lazy"
                         decoding="async"
                         onLoad={handleImageLoad}
                         onError={handleImageError}
-                        style={{ pointerEvents: 'none', boxShadow: 'none' }}
                       />
                     ))
                   : displayImage && !imageError && (
@@ -189,21 +179,13 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
                         alt={project.title}
                         className={
                           `object-contain rounded-2xl transition-all duration-700 will-change-transform will-change-opacity opacity-100 ` +
-                          (isNaturrausch
-                            ? 'h-[95%] w-[95%] md:h-[98%] md:w-[98%] z-20 group-hover:scale-110'
-                            : isDashboardPrototype
-                              ? 'h-[65%] w-[65%] md:h-[70%] md:w-[70%] z-10 group-hover:scale-105'
-                            : isKoestlinMockup
-                              ? 'h-[45%] w-[45%] md:h-[70%] md:w-[70%] z-10 group-hover:scale-105'
-                            : isVHSAalen
-                              ? 'h-[98%] w-[98%] md:h-[99%] md:w-[99%] z-20 group-hover:scale-110'
-                              : 'h-[85%] w-[85%] z-10 group-hover:scale-105')
+                          'w-full h-full max-w-full max-h-full object-contain rounded-2xl transition-all duration-700 will-change-transform will-change-opacity opacity-100 z-10 group-hover:scale-105'
                         }
+                             style={{ pointerEvents: 'none', boxShadow: 'none', transform: 'scale(0.8)' }}
                         loading="lazy"
                         decoding="async"
                         onLoad={handleImageLoad}
                         onError={handleImageError}
-                        style={{ pointerEvents: 'none', boxShadow: 'none' }}
                       />
                     )
               )}
@@ -220,12 +202,24 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
           {/* Content */}
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <h3
-              className="text-xl md:text-2xl font-mono font-bold text-white tracking-tight leading-none whitespace-nowrap overflow-hidden text-ellipsis"
-              style={{ letterSpacing: '-0.03em' }}
-              title={project.title}
-            >
-              {project.title}
-            </h3>
+                className="font-mono font-bold text-white tracking-tight leading-none overflow-hidden text-ellipsis"
+                style={{
+                  letterSpacing: '-0.03em',
+                  fontSize: 'clamp(0.9rem, 2vw + 0.7rem, 1.7rem)',
+                  lineHeight: '1.1',
+                  maxWidth: '100%',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  position: 'relative',
+                  zIndex: 30,
+                }}
+                title={project.title}
+              >
+                {project.title}
+              </h3>
           </div>
         </div>
       </motion.article>
@@ -242,6 +236,25 @@ export default function ProjectGrid() {
 
   // Memoize columns computation
   const columns = useMemo(() => getProjectColumns(projects), []);
+
+  // Show only one "Coming Soon" placeholder if the 3D column has less than 3 projects
+  const column3 = columns[2];
+  if (column3.length < 3) {
+    column3.push({
+      id: 'coming-soon',
+      title: 'More Projects Coming Soon',
+      category: '3D Visualization',
+      description: 'New 3D work is in progress and will be added soon.',
+      image: null,
+      images: [],
+      color: 'from-gray-800/80 to-gray-900/80',
+      scrollSpeed: 1,
+      overlap: 0,
+      column: 2,
+      debug: 'placeholder',
+      isPlaceholder: true
+    });
+  }
 
   const handleProjectClick = useCallback((project) => {
     setSelectedProject(project);
@@ -302,12 +315,47 @@ export default function ProjectGrid() {
                 style={{ marginTop: columnOffsets[colIndex] }}
               >
                 {column.map((project, i) => (
-                  <ParallaxCard
-                    key={project.id}
-                    project={project}
-                    index={colIndex * 3 + i}
-                    onClick={handleProjectClick}
-                  />
+                  project.id === 'coming-soon' ? (
+                      <div
+                        key={project.id}
+                        className="group relative aspect-square w-full overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-700/60 flex items-center justify-center shadow-lg cursor-pointer transparency-60"
+                        style={{ opacity: 0.4, marginTop: '3rem' }}
+                        data-cursor="view"
+                      >
+                        {/* Gradient effect from other grids with reduced opacity */}
+                        <div className="absolute inset-0 bg-linear-to-br from-neutral-800/70 via-neutral-900/80 to-neutral-950/90" />
+                      <div className="flex flex-col items-center justify-center w-full h-full p-6 relative z-10">
+                        <span className="text-6xl md:text-7xl font-black text-white mb-4 flex items-center justify-center">
+                          <svg xmlns='http://www.w3.org/2000/svg' className='inline-block h-12 w-12 mr-2' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
+                        </span>
+                        <h3
+                          className="font-sans font-bold text-white text-center mb-2 tracking-tight leading-none overflow-hidden text-ellipsis"
+                          style={{
+                            letterSpacing: '-0.03em',
+                            fontSize: 'clamp(1.1rem, 2vw + 1rem, 2.2rem)',
+                            lineHeight: '1.1',
+                            maxWidth: '100%',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                          title={project.title}
+                        >
+                          {project.title}
+                        </h3>
+                        <p className="text-base text-white/70 text-center font-sans font-normal mt-2 max-w-xs mx-auto">{project.description}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <ParallaxCard
+                      key={project.id}
+                      project={project}
+                      index={colIndex * 3 + i}
+                      onClick={handleProjectClick}
+                    />
+                  )
                 ))}
               </div>
             ))}

@@ -66,7 +66,7 @@ const CustomCursor = memo(function CustomCursor() {
     <>
       {/* Main cursor dot */}
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[9999] mix-blend-difference will-change-transform"
+        className="pointer-events-none fixed left-0 top-0 z-9999 mix-blend-difference will-change-transform"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -121,7 +121,7 @@ const CustomCursor = memo(function CustomCursor() {
 
       {/* Outer ring - follows with delay */}
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[9998] will-change-transform"
+        className="pointer-events-none fixed left-0 top-0 z-9998 will-change-transform"
         style={{
           x: outerXSpring,
           y: outerYSpring,

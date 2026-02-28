@@ -116,8 +116,8 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Custom Cursor - Desktop only */}
-      <div className="hidden md:block">
+      {/* Custom Cursor - Desktop only (not tablet) */}
+      <div className="hidden lg:block">
         <CustomCursor />
       </div>
 
@@ -192,17 +192,14 @@ export default function Layout({ children }) {
                   key={item.label}
                   href={item.href}
                   onClick={closeMobileMenu}
-                  className="text-[15vw] font-black uppercase leading-none tracking-tighter text-white/20 transition-colors hover:text-white will-change-transform"
+                  className="text-[15vw] font-black uppercase leading-none tracking-tighter text-white will-change-transform"
                   style={{
-                    WebkitTextStroke: '1px rgba(255,255,255,0.3)',
-                    WebkitTextFillColor: 'transparent',
+                    WebkitTextStroke: 'none',
+                    WebkitTextFillColor: 'white',
                   }}
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + i * 0.1, ease: 'linear' }}
-                  whileHover={{
-                    WebkitTextFillColor: 'white',
-                  }}
                 >
                   {item.label}
                 </motion.a>

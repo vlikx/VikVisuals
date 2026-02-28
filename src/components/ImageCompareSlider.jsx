@@ -3,6 +3,44 @@ import './ImageCompareSlider.css';
 
 
 export default function ImageCompareSlider({ leftImage, rightImage, leftLabel = 'Original', rightLabel = '3D Render' }) {
+      // Add CSS to hide slide hint below 1700px
+      React.useEffect(() => {
+        const style = document.createElement('style');
+        style.innerHTML = `
+          @media (max-width: 1700px) {
+            .slider-slide-hint, .slider-slide-line { display: none !important; }
+          }
+        `;
+        document.head.appendChild(style);
+        return () => { document.head.removeChild(style); };
+      }, []);
+    // Responsive: use button switch below 1700px
+    const [isSmallDevice, setIsSmallDevice] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 1700 : false);
+    const [activeImage, setActiveImage] = useState('right');
+
+    React.useLayoutEffect(() => {
+      function handleResize() {
+        setIsSmallDevice(window.innerWidth < 1700);
+      }
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('orientationchange', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('orientationchange', handleResize);
+      };
+    }, []);
+
+  // Determine if tablet (width < 1024px)
+  const [isTablet, setIsTablet] = useState(false);
+  React.useEffect(() => {
+    function handleTabletResize() {
+      setIsTablet(window.innerWidth < 1024);
+    }
+    handleTabletResize();
+    window.addEventListener('resize', handleTabletResize);
+    return () => window.removeEventListener('resize', handleTabletResize);
+  }, []);
   const containerRef = useRef(null);
   const [sliderPos, setSliderPos] = useState(50);
   const dragging = useRef(false);
@@ -78,6 +116,51 @@ export default function ImageCompareSlider({ leftImage, rightImage, leftLabel = 
     return () => cancelAnimationFrame(rafId);
   }, [isUserDragging, isHovering]);
 
+  if (isSmallDevice) {
+    // Single toggle button UI for mobile/tablet
+    const imageStyle = {
+      maxWidth: isTablet ? '80vw' : '90vw',
+      maxHeight: isTablet ? '32vh' : '40vh',
+      width: '100%',
+      height: 'auto',
+      margin: '0 auto',
+      padding: '0.5rem',
+      display: 'block',
+    };
+    const isLeft = activeImage === 'left';
+    return (
+      <div className="image-compare-slider flex flex-col items-center justify-center w-full h-full">
+        <div className="w-full flex items-center justify-center p-2">
+          {isLeft ? (
+            <img
+              src={leftImage}
+              alt={leftLabel}
+              className="object-contain rounded-2xl bg-black"
+              style={imageStyle}
+            />
+          ) : (
+            <img
+              src={rightImage}
+              alt={rightLabel}
+              className="object-contain rounded-2xl bg-black"
+              style={imageStyle}
+            />
+          )}
+        </div>
+        <div className="flex flex-row flex-wrap items-center justify-center mt-2 mb-2 w-full">
+          <button
+            className="px-4 py-1 rounded-full font-mono text-sm border border-accent bg-black/95 text-gray-400 hover:bg-accent/10 hover:text-accent focus:outline-none transition-all duration-200 min-w-[120px] max-w-[220px]"
+            onClick={() => setActiveImage(isLeft ? 'right' : 'left')}
+            aria-label={isLeft ? rightLabel : leftLabel}
+            style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+          >
+            {isLeft ? `Show ${rightLabel}` : `Show ${leftLabel}`}
+          </button>
+        </div>
+      </div>
+    );
+  }
+  // Default: slider UI
   return (
     <div
       className="image-compare-slider"
@@ -133,6 +216,7 @@ export default function ImageCompareSlider({ leftImage, rightImage, leftLabel = 
       >
         {rightLabel}
       </div>
+      {/* Slide hint/line removed to avoid duplicate on desktop. Only side hint remains. */}
     </div>
   );
 }
