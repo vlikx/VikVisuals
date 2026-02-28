@@ -1,0 +1,114 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
+@import '@fontsource/inter/900.css';
+@import 'lenis/dist/lenis.css';
+@import "tailwindcss";
+
+@theme {
+  /* Pure monochromatic palette */
+  --color-black: #000000;
+  --color-dark-900: #000000;
+  --color-dark-800: #0a0a0a;
+  --color-dark-700: #111111;
+  --color-dark-600: #1a1a1a;
+  --color-dark-500: #242424;
+  
+  /* Accent */
+  --color-accent: #00d4ff;
+  --color-accent-hover: #00b8e6;
+  
+  --color-light: #ffffff;
+  --color-light-muted: rgba(255, 255, 255, 0.87);
+  --color-light-dim: rgba(255, 255, 255, 0.5);
+
+  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --font-size-hero: clamp(3rem, 10vw, 8rem);
+  --font-size-hero--line-height: 1.1;
+  --font-size-display: clamp(2rem, 6vw, 5rem);
+  --font-size-display--line-height: 1.15;
+  --font-size-heading: clamp(1.5rem, 4vw, 3rem);
+  --font-size-heading--line-height: 1.2;
+
+  --animate-marquee: marquee 25s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 25s linear infinite;
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  @keyframes marquee-reverse {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+  }
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-dark-900 text-light-muted antialiased font-sans;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
+}
+
+@layer components {
+  .section {
+    @apply min-h-screen w-full px-6 py-20 md:px-12 lg:px-24;
+  }
+
+  .container-wide {
+    @apply mx-auto max-w-7xl;
+  }
+
+  .text-gradient {
+    @apply bg-linear-to-r from-accent to-purple-500 bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-accent-hover hover:scale-105;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 rounded-full border border-light/20 px-6 py-3 text-sm font-medium text-light transition-all duration-300 hover:bg-light/10 hover:border-light/40;
+  }
+
+  /* Atlas Button - Marquee hover effect */
+  .atlas-btn .animate-marquee {
+    animation: marquee-fast 3s linear infinite;
+  }
+
+  @keyframes marquee-fast {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Shimmer animation for loading skeletons */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

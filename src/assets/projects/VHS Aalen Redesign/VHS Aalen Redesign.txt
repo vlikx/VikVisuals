@@ -1,0 +1,7 @@
+Project: VHS Aalen – User-Centered Experience Redesign
+
+- The Vision: Transforming a frustrating web experience into an accessible, modern educational hub by aligning user needs with institutional goals.
+- Team & Role: Developed in a team of 5, where I led the visual redesign and conducted the cluster analysis and user interviews to drive evidence-based design decisions.
+- UX Strategy: Conducted a deep-dive context-of-use analysis to identify pain points, followed by clustering insights to define high-impact usability requirements.
+- Design Execution: Focused on simplifying the course booking journey through a clean interface, improved information architecture, and an empathetic visual language.
+- Responsive Engineering: Crafted a consistent experience across desktop, tablet, and mobile to ensure "Education for All" is accessible on any device at any time.

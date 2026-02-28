@@ -1,0 +1,7 @@
+Project: Lead Management Dashboard – Utility Data Hub
+
+- The Vision: Streamlining lead management and pre-qualification through a high-performance, clickable dashboard for utility services.
+- Team & Role: Collaborative project developed in a team of 4, where I served as the lead developer primarily responsible for the technical front-end implementation.
+- UX Strategy: Implementing a user-centric "Performance Overview" and filterable lead tables to transform complex sales KPIs into actionable insights.
+- Modular Engineering: Designed with a strict modularization concept to ensure scalability, ease of maintenance, and efficient handling of customer data.
+- Tech Stack: Built with React/Vite to deliver a production-ready prototype featuring real-time status tracking, priority-based filtering, and a responsive UI.
