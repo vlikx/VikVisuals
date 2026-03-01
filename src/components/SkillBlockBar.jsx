@@ -119,43 +119,45 @@ export default function SkillBlockBar({ skill, index, groupStart }) {
           </span>
         </div>
         {/* Box Level Indicator */}
-        <div className="flex items-center h-full ml-4 md:ml-8 gap-1">
-          {Array.from({ length: BOXES }).map((_, i) => (
-            <motion.div
-              key={i}
-              initial="idle"
-              animate={revealed ? 'active' : 'idle'}
-              variants={{
-                idle: {
-                  scale: 0.9,
-                  opacity: 0.2,
-                  background: '#e5e7eb',
-                  boxShadow: 'none',
-                },
-                active: i < filled
-                  ? {
-                      scale: [0.9, 1.15, 1],
-                      opacity: 1,
-                      background: 'var(--color-accent)',
-                      boxShadow: 'none',
-                      transition: {
-                        delay: 0.08 * i,
-                        duration: 0.32,
-                        type: 'spring',
-                        stiffness: 300,
+        <div className="flex flex-col items-end h-full ml-4 md:ml-8 gap-1">
+          <div className="flex items-center gap-1">
+            {Array.from({ length: BOXES }).map((_, i) => (
+              <motion.div
+                key={i}
+                initial="idle"
+                animate={revealed ? 'active' : 'idle'}
+                variants={{
+                  idle: {
+                    scale: 0.9,
+                    opacity: 0.2,
+                    background: '#e5e7eb',
+                    boxShadow: 'none',
+                  },
+                  active: i < filled
+                    ? {
+                        scale: [0.9, 1.15, 1],
+                        opacity: 0.85,
+                        background: 'var(--color-accent-hover)',
+                        boxShadow: 'none',
+                        transition: {
+                          delay: 0.08 * i,
+                          duration: 0.32,
+                          type: 'spring',
+                          stiffness: 300,
+                        },
+                      }
+                    : {
+                        scale: 0.9,
+                        opacity: 0.2,
+                        background: '#e5e7eb',
+                        boxShadow: 'none',
                       },
-                    }
-                  : {
-                      scale: 0.9,
-                      opacity: 0.2,
-                      background: '#e5e7eb',
-                      boxShadow: 'none',
-                    },
-              }}
-              className="w-2.5 h-2.5 rounded-[1.5px]"
-              style={{ marginRight: i !== BOXES - 1 ? 3 : 0 }}
-            />
-          ))}
+                }}
+                className="w-2.5 h-2.5 rounded-[1.5px]"
+                style={{ marginRight: i !== BOXES - 1 ? 3 : 0 }}
+              />
+            ))}
+          </div>
         </div>
       </motion.div>
     </div>

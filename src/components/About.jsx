@@ -13,20 +13,20 @@ import MusicIcon from '../assets/Interests/Music.svg';
 const infoData = [
   { label: 'FOCUS', value: 'GATHERING EXPERIENCE' },
   { label: 'CURRENTLY', value: 'UX STUDENT HS AALEN // WORKING @ MERCEDES-BENZ' },
-  { label: 'BACKGROUND', value: 'MEDIA DESIGN, PRINT & PACKAGING, 3D VISUALIZATION' },
-  { label: 'LOCATION / BORN', value: 'ESSLINGEN AM NECKAR // 26' },
+  { label: 'BACKGROUND', value: 'TRAINING AS A MEDIA DESIGNER // DIPLOMA IN GAME ART & 3D ANIMATION' },
+  { label: 'LOCATION // AGE', value: 'ESSLINGEN AM NECKAR // 26' },
   { label: 'INTERESTS', value: 'TRAVEL, GAMING, PHOTOGRAPHY, FITNESS, FESTIVALS' },
   { label: 'PETS', value: null },
 ];
 
 const skills = [
-  // Design & Creative
-  { name: 'Adobe Photoshop', description: ' High-End Retouching & Post-Production', level: 90, category: 'Design & Creative' },
-  { name: 'Adobe InDesign', description: 'All sorts of printmedia', level: 80, category: 'Design & Creative' },
-  { name: 'Adobe Illustrator', description: 'Vector graphics, branding, icons', level: 80, category: 'Design & Creative' },
-  { name: 'Print & Packaging', description: 'Print-ready files & prepress production (flexographic printing & digital printing)', level: 90, category: 'Design & Creative' },
-  { name: 'Creating Presentations', description: 'Conferences, projects & explanation of solutions', level: 70, category: 'Design & Creative' },
-  { name: 'Photography', description: 'Weddings, Birthdays & Events', level: 50, category: 'Design & Creative' },
+  // Design & Creativity
+  { name: 'Adobe Photoshop', description: ' High-End Retouching & Post-Production', level: 90, category: 'Design & Creativity' },
+  { name: 'Adobe InDesign', description: 'All sorts of printmedia', level: 80, category: 'Design & Creativity' },
+  { name: 'Adobe Illustrator', description: 'Vector graphics, branding, icons', level: 80, category: 'Design & Creativity' },
+  { name: 'Print & Packaging', description: 'Print-ready files & prepress production (flexographic printing & digital printing)', level: 90, category: 'Design & Creativity' },
+  { name: 'Creating Presentations', description: 'Conferences, projects & explanation of solutions', level: 70, category: 'Design & Creativity' },
+  { name: 'Photography', description: 'Weddings, Birthdays & Events', level: 50, category: 'Design & Creativity' },
 
   // 3D & Motion
   { name: 'Autodesk Maya', description: '3D modeling, animation & rendering', level: 60, category: '3D & Motion' },
@@ -42,9 +42,9 @@ const skills = [
 // Group skills by thematic category for clustering, sorted by level descending
 const skillGroups = [
   {
-    label: 'Design & Creative',
+    label: 'Design & Creativity',
     skills: skills
-      .filter((s) => s.category === 'Design & Creative')
+      .filter((s) => s.category === 'Design & Creativity')
       .sort((a, b) => b.level - a.level),
   },
   {
@@ -278,6 +278,15 @@ export default function About() {
         </div>
 
         {/* Skills - Technical Dashboard Grid, visually clustered by group */}
+        <div className="mb-4 flex items-baseline justify-between">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 select-none">
+            // CAPABILITIES
+          </span>
+          <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/40 select-none">
+            // EXPERIENCE
+          </span>
+        </div>
+
         <div className="grid gap-2 md:grid-cols-2">
           {skillGroups.map((group, groupIdx) => (
             <div
