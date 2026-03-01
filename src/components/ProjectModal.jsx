@@ -166,8 +166,7 @@ export default function ProjectModal({ project, isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/98 min-h-screen"
-            style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+            className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/98 min-h-screen overflow-y-auto"
             onClick={onClose}
             onWheel={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
@@ -198,7 +197,7 @@ export default function ProjectModal({ project, isOpen, onClose }) {
               exit={{ opacity: 0, y: 60 }}
               transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               onClick={(e) => e.stopPropagation()}
-              className={`relative z-10 w-full bg-black flex flex-col ${isStacked ? '' : 'xl:flex-row'} max-h-screen overflow-y-auto`}
+              className={`relative z-10 w-full bg-black flex flex-col ${isStacked ? '' : 'xl:flex-row'}`}
             >
               {/* Graphics above text for tablet/mobile */}
               <div className={`w-full ${isStacked ? '' : 'xl:w-1/2'} flex items-center justify-center p-2 xl:p-8 rounded-t-2xl min-h-0`} style={{minHeight: '220px', height: '70vh', maxHeight: '80vh', justifyContent: 'center', alignItems: 'center'}}>
@@ -281,7 +280,7 @@ export default function ProjectModal({ project, isOpen, onClose }) {
               </div>
 
               {/* Text below graphics for tablet/mobile */}
-              <div className={`w-full ${isStacked ? '' : 'xl:w-1/2'} flex flex-col justify-start p-2 xl:p-8 min-h-0 h-full grow overflow-y-auto`} style={{maxHeight: '100vh'}}>
+              <div className={`w-full ${isStacked ? '' : 'xl:w-1/2'} flex flex-col justify-start p-2 xl:p-8 pb-10 md:pb-12 min-h-0`}>
               {/* Header Row */}
               <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                 {/* Title & Category */}

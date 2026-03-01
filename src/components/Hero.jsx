@@ -39,17 +39,17 @@ export default function Hero() {
         style={{ opacity, willChange: 'opacity' }}
         className="relative z-10"
       >
-        {/* Giant Brutalist Title - Bleeds off screen */}
+        {/* Giant Brutalist Title - Centered, slightly higher */}
         <motion.div
           style={{ y: y1, scale, willChange: 'transform' }}
-          className="relative will-change-transform"
+          className="relative will-change-transform flex flex-col items-center -mt-6 md:-mt-40"
         >
           <motion.h1
             initial={{ x: '-100%' }}
-            animate={{ x: ['-100%', '0%', '2vw'] }}
+            animate={{ x: ['-100%', '0%', '0%'] }}
             transition={{ times: [0, 0.7, 1], duration: 2.2, ease: [0.7, 0.2, 0.1, 1] }}
-            className="text-[12vw] sm:text-[16vw] md:text-[18vw] font-black font-sans leading-[0.85] tracking-tighter whitespace-nowrap select-none will-change-transform"
-            style={{ marginLeft: '3vw', willChange: 'transform' }}
+            className="text-[10vw] sm:text-[12vw] md:text-[16vw] lg:text-[18vw] font-black font-sans leading-[0.85] tracking-tighter whitespace-nowrap select-none will-change-transform text-center"
+            style={{ willChange: 'transform' }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -66,10 +66,10 @@ export default function Hero() {
 
           <motion.h1
             initial={{ x: '100%' }}
-            animate={{ x: ['100%', '0%', '-2vw'] }}
+            animate={{ x: ['100%', '0%', '0%'] }}
             transition={{ times: [0, 0.7, 1], duration: 2.2, delay: 0.1, ease: [0.7, 0.2, 0.1, 1] }}
-            className="text-[12vw] sm:text-[16vw] md:text-[18vw] font-black font-sans leading-[0.85] tracking-tighter whitespace-nowrap select-none text-right will-change-transform"
-            style={{ marginRight: '4vw', willChange: 'transform' }}
+            className="text-[10vw] sm:text-[12vw] md:text-[16vw] lg:text-[18vw] font-black font-sans leading-[0.85] tracking-tighter whitespace-nowrap select-none text-center will-change-transform"
+            style={{ willChange: 'transform' }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -140,7 +140,7 @@ export default function Hero() {
             {tickerItems.map((_, i) => (
               <span
                 key={i}
-                className="mx-6 text-[6vw] sm:text-[8vw] md:text-[10vw] font-black font-sans uppercase tracking-tight text-white/2 select-none"
+                className="mx-6 text-[4vw] sm:text-[5vw] md:text-[6vw] lg:text-[7vw] font-black font-sans uppercase tracking-tight text-white/2 select-none"
               >
                 3D VISUALIZATION • UX DESIGN • DIGITAL MEDIA •
               </span>
@@ -175,7 +175,11 @@ export default function Hero() {
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="flex flex-col items-center"
         >
-          <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 rotate-90 origin-center mb-8">
+          {/* Mobile/tablet: Swipe, Desktop: Scroll */}
+          <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 rotate-90 origin-center mb-8 md:hidden">
+            Swipe
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 rotate-90 origin-center mb-8 hidden md:inline">
             Scroll
           </span>
           <div className="h-16 w-px bg-linear-to-b from-white/30 to-transparent" />

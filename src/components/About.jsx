@@ -132,7 +132,9 @@ export default function About() {
               className="flex flex-row items-center"
             >
               <div className="w-16 h-px bg-linear-to-r from-white/30 to-transparent"></div>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">Click</span>
+              {/* Mobile/tablet: Touch, Desktop: Click */}
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 md:hidden">Tap</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 hidden md:inline">Click</span>
             </motion.div>
           </motion.div>
         </div>
@@ -201,9 +203,9 @@ export default function About() {
                 {item.label}
               </span>
               {item.label === 'PETS' ? (
-                <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="mt-4 flex flex-wrap gap-4 md:gap-8 justify-center md:justify-between">
                   {/* Mochi */}
-                  <div className="flex flex-col items-center gap-1">
+                  <div className="flex flex-col items-center gap-1 flex-1 min-w-[70px]">
                     <div className="relative w-14 h-14 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
                       <img
                         src={MochiPaw}
@@ -218,7 +220,7 @@ export default function About() {
                     </span>
                   </div>
                   {/* Oreo */}
-                  <div className="flex flex-col items-center gap-1">
+                  <div className="flex flex-col items-center gap-1 flex-1 min-w-[70px]">
                     <div className="relative w-14 h-14 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
                       <img
                         src={OreoPaw}

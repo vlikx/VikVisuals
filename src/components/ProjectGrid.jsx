@@ -292,7 +292,7 @@ export default function ProjectGrid() {
           whileInView={{ x: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="text-[20vw] font-black leading-none tracking-tighter text-white/3 whitespace-nowrap select-none will-change-transform"
+          className="w-full text-center text-[16vw] sm:text-[14vw] md:text-[12vw] lg:text-[10vw] font-black leading-none tracking-tighter text-white/10 whitespace-nowrap select-none will-change-transform"
         >
         PROJECTS
         </motion.h2>

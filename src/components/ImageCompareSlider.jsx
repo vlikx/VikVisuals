@@ -118,12 +118,12 @@ export default function ImageCompareSlider({ leftImage, rightImage, leftLabel = 
   if (isSmallDevice) {
     // Single toggle button UI for mobile/tablet
     const imageStyle = {
-      maxWidth: isTablet ? '80vw' : '90vw',
-      maxHeight: isTablet ? '32vh' : '40vh',
+      maxWidth: isTablet ? '95vw' : '100vw',
+      maxHeight: isTablet ? '60vh' : '72vh',
       width: '100%',
       height: 'auto',
       margin: '0 auto',
-      padding: '0.5rem',
+      padding: isTablet ? '0.5rem' : '0.25rem',
       display: 'block',
     };
     const isLeft = activeImage === 'left';

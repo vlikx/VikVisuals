@@ -51,7 +51,7 @@ export default function SkillBlockBar({ skill, index, groupStart }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 0.8 }}
-          className="absolute -top-22 left-1/4 -translate-x-1/2 flex items-center gap-4 z-20"
+          className="absolute -top-22 left-1/4 -translate-x-1/2 hidden lg:flex items-center gap-4 z-20"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
