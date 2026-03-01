@@ -202,10 +202,10 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
           {/* Content */}
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <h3
-                className="font-mono font-bold text-white tracking-tight leading-none overflow-hidden text-ellipsis"
+              className="font-mono font-bold text-white tracking-tight leading-none overflow-hidden text-ellipsis text-center"
                 style={{
                   letterSpacing: '-0.03em',
-                  fontSize: 'clamp(0.9rem, 2vw + 0.7rem, 1.7rem)',
+                  fontSize: 'clamp(0.9rem, 1.4vw + 0.7rem, 1.6rem)',
                   lineHeight: '1.1',
                   maxWidth: '100%',
                   display: '-webkit-box',

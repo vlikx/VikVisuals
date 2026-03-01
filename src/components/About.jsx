@@ -12,9 +12,9 @@ import MusicIcon from '../assets/Interests/Music.svg';
 
 const infoData = [
   { label: 'FOCUS', value: 'GATHERING EXPERIENCE' },
-  { label: 'CURRENTLY', value: 'UX STUDENT HS AALEN //\nWORKING @ MERCEDES-BENZ' },
+  { label: 'CURRENTLY', value: 'UX STUDENT HS AALEN // WORKING @ MERCEDES-BENZ' },
   { label: 'BACKGROUND', value: 'MEDIA DESIGN, PRINT & PACKAGING, 3D VISUALIZATION' },
-  { label: 'LOCATION / BORN', value: 'DE // REMOTE // 26 // ESSLINGEN AM NECKAR' },
+  { label: 'LOCATION / BORN', value: 'ESSLINGEN AM NECKAR // 26' },
   { label: 'INTERESTS', value: 'TRAVEL, GAMING, PHOTOGRAPHY, FITNESS, FESTIVALS' },
   { label: 'PETS', value: null },
 ];

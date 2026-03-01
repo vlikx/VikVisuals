@@ -118,18 +118,21 @@ export default function ImageCompareSlider({ leftImage, rightImage, leftLabel = 
   if (isSmallDevice) {
     // Single toggle button UI for mobile/tablet
     const imageStyle = {
-      maxWidth: isTablet ? '95vw' : '100vw',
-      maxHeight: isTablet ? '60vh' : '72vh',
+      maxWidth: '100vw',
+      maxHeight: '80vh',
       width: '100%',
       height: 'auto',
       margin: '0 auto',
-      padding: isTablet ? '0.5rem' : '0.25rem',
+      padding: 0,
       display: 'block',
     };
     const isLeft = activeImage === 'left';
     return (
-      <div className="image-compare-slider flex flex-col items-center justify-center w-full h-full">
-        <div className="w-full flex items-center justify-center p-2">
+      <div
+        className="image-compare-slider flex flex-col items-center justify-center w-full h-full"
+        style={{ width: '100%', maxWidth: '100%', minHeight: 'auto', padding: 0 }}
+      >
+        <div className="w-full flex items-center justify-center">
           {isLeft ? (
             <img
               src={leftImage}
