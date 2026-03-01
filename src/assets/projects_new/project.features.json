@@ -1,0 +1,24 @@
+[
+  {
+    "id": 2,
+    "link": "https://software-prototype-stadtwerke-konst.vercel.app/",
+    "hint": "Note: This demo website only requires dummy logins – please do not use any real credentials."
+  },
+  {
+    "id": 5,
+    "link": "https://naturrausch.vercel.app"
+  },
+  {
+    "id": 9,
+    "link": "https://vhs-prototyp.vercel.app"
+  },
+  {
+    "id": 4,
+    "slider": {
+      "leftImage": "slide_left.jpg",
+      "rightImage": "slide_right.jpg",
+      "leftLabel": "Real Photo",
+      "rightLabel": "3D Render"
+    }
+  }
+]

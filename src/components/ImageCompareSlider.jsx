@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import './ImageCompareSlider.css';
 
-
 export default function ImageCompareSlider({ leftImage, rightImage, leftLabel = 'Original', rightLabel = '3D Render' }) {
       // Add CSS to hide slide hint below 1700px
       React.useEffect(() => {
@@ -149,7 +148,7 @@ export default function ImageCompareSlider({ leftImage, rightImage, leftLabel = 
         </div>
         <div className="flex flex-row flex-wrap items-center justify-center mt-2 mb-2 w-full">
           <button
-            className="px-4 py-1 rounded-full font-mono text-sm border border-accent bg-black/95 text-gray-400 hover:bg-accent/10 hover:text-accent focus:outline-none transition-all duration-200 min-w-[120px] max-w-[220px]"
+            className="px-4 py-1 rounded-full font-mono text-sm border border-accent bg-black/95 text-gray-400 hover:bg-accent/10 hover:text-accent focus:outline-none transition-all duration-200 min-w-30 max-w-55"
             onClick={() => setActiveImage(isLeft ? 'right' : 'left')}
             aria-label={isLeft ? rightLabel : leftLabel}
             style={{ fontWeight: 500, letterSpacing: '0.05em' }}

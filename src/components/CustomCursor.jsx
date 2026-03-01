@@ -9,13 +9,14 @@ const CustomCursor = memo(function CustomCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Smooth spring physics for the cursor
-  const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
+  // Faster spring physics for the cursor (less lag)
+  const springConfig = { damping: 15, stiffness: 700, mass: 0.4 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
-  // Outer ring with more lag
-  const outerSpringConfig = { damping: 30, stiffness: 150, mass: 1 };
+  // Outer ring: reduce lag, make more responsive
+  // Smoother trailing effect for outer ring
+  const outerSpringConfig = { damping: 30, stiffness: 120, mass: 1.2 };
   const outerXSpring = useSpring(cursorX, outerSpringConfig);
   const outerYSpring = useSpring(cursorY, outerSpringConfig);
 
@@ -27,9 +28,9 @@ const CustomCursor = memo(function CustomCursor() {
 
   const handleMouseOver = useCallback((e) => {
     const target = e.target;
-    
+
     // Check for interactive elements
-    const isClickable = 
+    const isClickable =
       target.tagName === 'A' ||
       target.tagName === 'BUTTON' ||
       target.closest('a') ||
@@ -37,10 +38,21 @@ const CustomCursor = memo(function CustomCursor() {
       target.dataset?.cursor === 'pointer';
 
     const isProject = target.closest('[data-cursor="project"]');
-    
-    if (isProject) {
+
+    // Check for LinkedIn or similar links
+    let isLinkedView = false;
+    const linkEl = target.closest('a');
+    if (linkEl && linkEl.href) {
+      const href = linkEl.href.toLowerCase();
+      if (href.includes('linkedin') || href.includes('behance') || href.includes('dribbble') || href.includes('github')) {
+        isLinkedView = true;
+      }
+    }
+
+    if (isProject || isLinkedView) {
       setIsHovering(true);
       setCursorText('VIEW');
+      setIsPointer(false);
     } else if (isClickable) {
       setIsPointer(true);
       setIsHovering(false);

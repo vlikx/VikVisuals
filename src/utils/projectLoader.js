@@ -22,27 +22,44 @@
 
 // Import all project images (flat structure)
 const flatImageModules = import.meta.glob(
-  '/src/assets/projects/*.{jpg,jpeg,png,gif,webp,avif}',
+  '/src/assets/projects_new/*.{jpg,jpeg,png,gif,webp,avif}',
   { eager: true, import: 'default' }
 );
 
-// Import all project images from folders
+// Import all project images from folders (one level deep)
 const folderImageModules = import.meta.glob(
-  '/src/assets/projects/*/*.{jpg,jpeg,png,gif,webp,avif}',
+  '/src/assets/projects_new/*/*.{jpg,jpeg,png,gif,webp,avif}',
+  { eager: true, import: 'default' }
+);
+
+// Import all slider images from dedicated slider subfolders
+const sliderImageModules = import.meta.glob(
+  '/src/assets/projects_new/*/slider/*.{jpg,jpeg,png,gif,webp,avif}',
   { eager: true, import: 'default' }
 );
 
 // Import all description files (flat)
 const flatTextModules = import.meta.glob(
-  '/src/assets/projects/*.txt',
+  '/src/assets/projects_new/*.txt',
   { eager: true, query: '?raw', import: 'default' }
 );
 
 // Import all description files (folders)
 const folderTextModules = import.meta.glob(
-  '/src/assets/projects/*/*.txt',
+  '/src/assets/projects_new/*/*.txt',
   { eager: true, query: '?raw', import: 'default' }
 );
+
+// Import project features (links, sliders, etc.)
+let projectFeatures = [];
+let projectIds = [];
+try {
+  projectFeatures = (await import('/src/assets/projects_new/project.features.json')).default;
+  projectIds = (await import('/src/assets/projects_new/project.ids.json')).default;
+} catch (e) {
+  projectFeatures = [];
+  projectIds = [];
+}
 
 // Color gradients to cycle through
 const colorGradients = [
@@ -84,11 +101,9 @@ function getBasename(path) {
  */
 function parseDescriptionFile(content) {
   if (!content) return { category: 'Project', description: '' };
-  
   const lines = content.trim().split('\n');
   const category = lines[0]?.trim() || 'Project';
   const description = lines.slice(1).join('\n').trim();
-  
   return { category, description };
 }
 
@@ -110,9 +125,8 @@ export function loadProjects() {
     function applyFinalColumnOverride(name, col) {
       const key = name.trim().toLowerCase();
       if (
-        key === 'naturrausch redesign' ||
-        key === 'vhs aalen redesign' ||
-        key === 'logo for a speech therapy practice'
+        key === 'naturrausch' ||
+        key === 'vhs aalen'
       ) return 0;
       return col;
     }
@@ -123,102 +137,117 @@ export function loadProjects() {
   // Process folder-based projects first
   for (const [imagePath, imageUrl] of Object.entries(folderImageModules)) {
     const folderName = getFolderName(imagePath);
-    
+    // Map old folder names to new ones for features
+    const folderNameMap = {
+      '3d mockups for koestlin gmbh': '3d product visualization',
+      'dashboard prototype': 'lead management dashboard',
+      'logo for a speech therapy practice': 'mundbild',
+      'mouse + mousepad 3d render': 'photorealistic 3d reconstruction',
+      'naturrausch redesign': 'naturrausch',
+      'poster creation': 'doomscrolling & vertieft',
+      'summerfestival poster': 'rampenfestival',
+      'vhs aalen redesign': 'vhs aalen',
+      'wedding flyer': 'interactive wedding invitation'
+    };
+    const mappedFolderName = folderNameMap[folderName.trim().toLowerCase()] || folderName;
     // Skip if we already processed this folder
     if (processedFolders.has(folderName)) continue;
     processedFolders.add(folderName);
-    
-    // Get all images in this folder
-      let folderImages = Object.entries(folderImageModules)
-        .filter(([path]) => getFolderName(path) === folderName)
-        .sort(([a], [b]) => a.localeCompare(b));
-    
-      // For Mouse + Mousepad 3D Render, only use _transparent image for grid
-      let coverImage, allImages;
-      if (folderName.trim().toLowerCase() === 'mouse + mousepad 3d render') {
-        const transparentImgs = folderImages.filter(([path]) => path.toLowerCase().includes('transparent.png'));
-        coverImage = transparentImgs.length > 0 ? transparentImgs[0][1] : folderImages[0][1];
-        allImages = transparentImgs.map(([, url]) => url);
-      } else {
-        coverImage = folderImages[0][1];
-        allImages = folderImages.map(([, url]) => url);
-      }
-    
+    // Get all images in this folder (grid/base images)
+    let folderImages = Object.entries(folderImageModules)
+      .filter(([path]) => getFolderName(path) === folderName)
+      .sort(([a], [b]) => a.localeCompare(b));
+
+    // For Photorealistic 3D Reconstruction, use normal PNGs/JPEGs for grid
+    // and JPEGs from the slider subfolder for the comparison slider
+    let coverImage, allImages, sliderImages = [];
+    if (mappedFolderName === 'photorealistic 3d reconstruction') {
+      // Grid images: prefer non-transparent if available
+      const nonTransparent = folderImages.filter(([path]) => !path.toLowerCase().includes('transparent'));
+      const sourceForGrid = nonTransparent.length > 0 ? nonTransparent : folderImages;
+      coverImage = sourceForGrid[0][1];
+      allImages = sourceForGrid.map(([, url]) => url);
+
+      // Slider images: take all images from the slider subfolder for this project
+      sliderImages = Object.entries(sliderImageModules)
+        .filter(([path]) => path.includes(`/${folderName}/slider/`))
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([, url]) => url);
+    } else {
+      coverImage = folderImages[0][1];
+      allImages = folderImages.map(([, url]) => url);
+    }
     // Find description file
-    const textPath = `/src/assets/projects/${folderName}/${folderName}.txt`;
+    const textPath = `/src/assets/projects_new/${folderName}/${folderName}.txt`;
     const textContent = folderTextModules[textPath] || '';
-    
     const { category, description } = parseDescriptionFile(textContent);
-    
+    // Get numeric ID from project.ids.json
+    const idEntry = projectIds.find(entry => entry.folder === folderName);
+    const projectId = idEntry ? idEntry.id : null;
+    // Attach features (link, slider, etc.) by numeric ID
+    const feature = projectFeatures.find(f => f.id === projectId);
     // Distribute projects across 3 columns
     let column = (id - 1) % 3;
     if (
-      folderName.toLowerCase().includes('prototype') ||
-      (category && category.toLowerCase().includes('prototype')) ||
-      folderName.toLowerCase().includes('redesign') ||
+      mappedFolderName.includes('dashboard') ||
+      (category && category.toLowerCase().includes('dashboard')) ||
+      mappedFolderName.includes('redesign') ||
       (category && category.toLowerCase().includes('redesign'))
     ) {
       column = 0;
     }
     // Place all 3D-related projects in third column
     if (
-      folderName.toLowerCase().includes('3d') ||
+      mappedFolderName.toLowerCase().includes('3d') ||
       (category && category.toLowerCase().includes('3d'))
     ) {
       column = 2;
     }
-    // Force Mouse + Mousepad 3D Render into first column (unless 3D override)
-    if (folderName.trim().toLowerCase() === 'mouse + mousepad 3d render' && column !== 2) {
-      column = 0;
-    }
     // Place all print-related projects in second column
     const printFolders = [
-      'wedding flyer',
-      'poster creation',
+      'interactive wedding invitation',
+      'doomscrolling & vertieft',
       'print & packaging',
-      'summerfestival poster',
-      'logo for a speech therapy practice',
-      'vhs aalen redesign',
-      'wedding flyer',
-      'naturrausch redesign',
+      'rampenfestival',
+      'mundbild',
+      'vhs aalen',
+      'naturrausch',
       'no sense of time'
     ];
-    if (printFolders.includes(folderName.trim().toLowerCase())) {
+    if (printFolders.includes(mappedFolderName.trim().toLowerCase())) {
       column = 1;
     }
     // Apply final override for clarity
-    column = applyFinalColumnOverride(folderName, column);
-    
-    // Add link for Naturrausch, Dashboard Prototype, and VHS Aalen Redesign
+    column = applyFinalColumnOverride(mappedFolderName, column);
+    // Add link for Naturrausch, Lead Management Dashboard, and VHS Aalen
     let link = undefined;
-    if (folderName.trim().toLowerCase() === 'naturrausch redesign') {
+    if (mappedFolderName === 'naturrausch') {
       link = 'https://naturrausch.vercel.app';
     }
-    if (folderName.trim().toLowerCase() === 'dashboard prototype') {
+    if (mappedFolderName === 'lead management dashboard') {
       link = 'https://software-prototype-stadtwerke-konst.vercel.app/';
     }
-    if (folderName.trim().toLowerCase() === 'vhs aalen redesign') {
+    if (mappedFolderName === 'vhs aalen') {
       link = 'https://vhs-prototyp.vercel.app/';
     }
-    
     projects.push({
-      id,
-      title: filenameToTitle(folderName),
+      id: projectId,
+      title: filenameToTitle(mappedFolderName),
       category,
       description,
       image: coverImage,
       images: allImages,
+      sliderImages,
       color:
-        folderName.toLowerCase() === 'no sense of time'
+        mappedFolderName === 'no sense of time'
           ? 'from-yellow-300/70 to-pink-300/70'
           : colorGradients[(id - 1) % colorGradients.length],
       scrollSpeed: scrollSpeeds[(id - 1) % colorGradients.length],
       overlap: 0,
       column,
-      debug: `title: ${folderName}, column: ${column}`,
-      ...(link ? { link } : {}),
+      debug: `title: ${mappedFolderName}, column: ${column}`,
+      ...(feature || {}),
     });
-    
     id++;
   }
 

@@ -1,0 +1,5 @@
+University Project 2nd Semester: Software Engineering
+
+- Goal: Modernize the website aesthetic and optimize usability for a better user experience.
+- Purpose: Improve engagement by simplifying complex tour details.
+- Execution: Developed using React & Vite in Visual Studio Code; deployed via Vercel for live demonstration.

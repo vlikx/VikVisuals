@@ -1,0 +1,5 @@
+University Project 3rd Semester: Software Prototyping
+
+- Goal: Develop a clickable prototype for lead management and pre-qualification.
+- Purpose: Streamline customer acquisition by transforming sales data into insights.
+- Execution: Developed using React & Vite in Visual Studio Code & deployed via Vercel for live demo.

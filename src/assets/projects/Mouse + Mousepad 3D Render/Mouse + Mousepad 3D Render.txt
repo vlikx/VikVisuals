@@ -1,7 +1,0 @@
-Project: Photorealistic 3D Object Reconstruction
-
-- The Vision: Achieving total visual fidelity by recreating physical objects in a 3D environment, blurring the line between photography and digital rendering.
-- Team & Role: An individual project where I was responsible for the entire pipeline, from studio photography and reference gathering to final post-production.
-- Process & Methodology: Conducted a professional photo shoot in a specialized studio to establish high-quality lighting and texture references for the physical assets.
-- Technical Execution: Utilized Blender and the Cycles engine to model and render the objects, focusing on complex light interactions and material accuracy.
-- Final Refinement: Post-processed the raw renders in Photoshop to fine-tune micro-details and color matching, ensuring a production-level photorealistic result.

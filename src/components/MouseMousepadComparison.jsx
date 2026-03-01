@@ -4,8 +4,8 @@ import ImageCompareSlider from './ImageCompareSlider';
 
 export default function MouseMousepadComparison() {
   // These paths should match your Vite static import resolution
-  const real = new URL('../assets/projects/Mouse + Mousepad 3D Render/Real.png', import.meta.url).href;
-  const render = new URL('../assets/projects/Mouse + Mousepad 3D Render/Render.png', import.meta.url).href;
+  const real = new URL('../assets/projects_new/Photorealistic 3D Reconstruction/slider/slide_left.jpg', import.meta.url).href;
+  const render = new URL('../assets/projects_new/Photorealistic 3D Reconstruction/slider/slide_right.jpg', import.meta.url).href;
 
   // Device width detection for hiding Slide hint
   const [isSmallDevice, setIsSmallDevice] = React.useState(() => typeof window !== 'undefined' ? window.innerWidth < 1700 : false);
@@ -28,13 +28,13 @@ export default function MouseMousepadComparison() {
         <ImageCompareSlider leftImage={real} rightImage={render} leftLabel="Real Photo" rightLabel="3D Render" />
         {/* Slide hint/line only rendered above 1700px */}
         {!isSmallDevice && (
-          <div className="flex flex-row items-center ml-2 select-none gap-2 absolute top-1/2 right-0 translate-x-[2rem] -translate-y-1/2" style={{opacity: 1, zIndex: 10}}>
+          <div className="flex flex-row items-center ml-2 select-none gap-2 absolute top-1/2 right-0 translate-x-8 -translate-y-1/2" style={{opacity: 1, zIndex: 10}}>
             <motion.div
               className="flex flex-row items-center"
               animate={{ x: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <div className="w-16 h-px bg-gradient-to-r from-white/30 to-transparent"></div>
+              <div className="w-16 h-px bg-linear-to-r from-white/30 to-transparent"></div>
               <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">Slide</span>
             </motion.div>
           </div>

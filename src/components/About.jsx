@@ -2,12 +2,21 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import SkillBlockBar from './SkillBlockBar';
 import PortraitVS from '../assets/Portrait_VS.jpg';
+import MochiPaw from '../assets/cats/Mochi.svg';
+import OreoPaw from '../assets/cats/Oreo.svg';
+import TravelIcon from '../assets/Interests/Vacation.svg';
+import GamingIcon from '../assets/Interests/Gaming.svg';
+import PhotoIcon from '../assets/Interests/Photography.svg';
+import FitnessIcon from '../assets/Interests/Fitness.svg';
+import MusicIcon from '../assets/Interests/Music.svg';
 
 const infoData = [
-  { label: 'FOCUS', value: 'UX STUDY // COLLECTING EXPERIENCE' },
-  { label: 'EXPERIENCE', value: '5+' },
-  { label: 'LOCATION', value: 'DE // REMOTE' },
-  { label: 'PLATFORMS', value: 'MAC + WINDOWS' },
+  { label: 'FOCUS', value: 'GATHERING EXPERIENCE' },
+  { label: 'CURRENTLY', value: 'UX STUDENT HS AALEN //\nWORKING @ MERCEDES-BENZ' },
+  { label: 'BACKGROUND', value: 'MEDIA DESIGN, PRINT & PACKAGING, 3D VISUALIZATION' },
+  { label: 'LOCATION / BORN', value: 'DE // REMOTE // 26 // ESSLINGEN AM NECKAR' },
+  { label: 'INTERESTS', value: 'TRAVEL, GAMING, PHOTOGRAPHY, FITNESS, FESTIVALS' },
+  { label: 'PETS', value: null },
 ];
 
 const skills = [
@@ -137,6 +146,8 @@ export default function About() {
         >
           VIKTOR STANG
         </motion.h2>
+
+        {/* No extra paragraph block; key info is integrated into the STATUS tiles below. */}
         {/* Portrait Modal */}
         {showPortraitModal && (
           <motion.div
@@ -158,7 +169,7 @@ export default function About() {
                 </div>
                 {/* Close Button - same style as modal */}
                 <button
-                  className="absolute top-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/60 transition-all hover:border-white/40 hover:text-white hover:scale-110"
+                  className="absolute top-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/60 transition-all hover:border-white/40 hover:text-white hover:scale-110 md:hidden"
                   onClick={e => { e.stopPropagation(); setShowPortraitModal(false); }}
                   aria-label="Close"
                 >
@@ -171,7 +182,7 @@ export default function About() {
           </motion.div>
         )}
         {/* Info Grid - Technical Readout */}
-        <div className="mb-24 grid grid-cols-2 gap-px bg-white/10 md:grid-cols-4">
+        <div className="mb-32 grid grid-cols-2 gap-px bg-white/10 md:grid-cols-4">
           {infoData.map((item, i) => (
             <motion.div
               key={item.label}
@@ -180,14 +191,86 @@ export default function About() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="bg-black p-6"
+              className={`bg-black p-6 ${
+                item.label === 'INTERESTS' || item.label === 'PETS'
+                  ? 'md:col-span-2'
+                  : ''
+              }`}
             >
               <span className="block text-[10px] uppercase tracking-[0.3em] text-white/30">
                 {item.label}
               </span>
-              <span className="mt-2 block font-mono text-sm text-white md:text-base">
-                {item.value}
-              </span>
+              {item.label === 'PETS' ? (
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                  {/* Mochi */}
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="relative w-14 h-14 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={MochiPaw}
+                        alt="Mochi paw icon"
+                        className="w-11 h-11 object-contain"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <span className="font-mono text-[10px] tracking-[0.2em] text-white/70">
+                      MOCHI
+                    </span>
+                  </div>
+                  {/* Oreo */}
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="relative w-14 h-14 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
+                      <img
+                        src={OreoPaw}
+                        alt="Oreo paw icon"
+                        className="w-11 h-11 object-contain"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <span className="font-mono text-[10px] tracking-[0.2em] text-white/70">
+                      OREO
+                    </span>
+                  </div>
+                </div>
+                ) : item.label === 'INTERESTS' ? (
+                  <div className="mt-4 flex flex-wrap gap-4 md:gap-8 justify-center md:justify-between">
+                  <div className="flex flex-col items-center gap-1 flex-1 min-w-[70px]">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
+                        <img src={TravelIcon} alt="Travel" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
+                      </div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/70">TRAVEL</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1 flex-1 min-w-[70px]">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
+                        <img src={GamingIcon} alt="Gaming" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
+                      </div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/70">GAMING</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1 flex-1 min-w-[70px]">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
+                        <img src={PhotoIcon} alt="Photography" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
+                      </div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/70">PHOTOGRAPHY</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1 flex-1 min-w-[70px]">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
+                        <img src={FitnessIcon} alt="Fitness" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
+                      </div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/70">FITNESS</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1 flex-1 min-w-[70px]">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 flex items-center justify-center overflow-hidden">
+                        <img src={MusicIcon} alt="Music" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
+                      </div>
+                      <span className="font-mono text-[10px] tracking-[0.2em] text-white/70">MUSIC</span>
+                    </div>
+                  </div>
+              ) : (
+                <span className="mt-2 block font-mono text-sm text-white md:text-base whitespace-pre-line">
+                  {item.value}
+                </span>
+              )}
             </motion.div>
           ))}
         </div>

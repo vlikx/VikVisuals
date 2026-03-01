@@ -2,8 +2,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState, useEffect, memo, useCallback, useMemo } from 'react';
 import { loadProjects, getProjectColumns } from '../utils/projectLoader';
 
-// Preload GIFs for Vite compatibility
-const weddingGifModules = import.meta.glob('/src/assets/projects/Wedding Flyer/01_compressed.gif', { eager: true, import: 'default' });
+// Preload GIF for Interactive Wedding Invitation (former Wedding Flyer) for Vite compatibility
+const weddingGifModules = import.meta.glob('/src/assets/projects_new/Interactive wedding invitation/01_compressed.gif', { eager: true, import: 'default' });
 import ProjectModal from './ProjectModal';
 import { AnimatePresence } from 'framer-motion';
 
@@ -22,8 +22,8 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
   const autoplayRef = useRef();
 
-  // Special: Wedding Flyer GIF overlay
-  const isWeddingFlyer = project.title.trim().toLowerCase().includes('wedding flyer');
+  // Special: Interactive Wedding Invitation (former Wedding Flyer) GIF overlay
+  const isWeddingFlyer = project.title.trim().toLowerCase().includes('interactive wedding invitation');
   const [weddingGif, setWeddingGif] = useState(null);
 
   const { scrollYProgress } = useScroll({
@@ -91,7 +91,7 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
           if (isWeddingFlyer) {
             weddingGifTimeout.current = setTimeout(() => {
               // Use Vite static import
-              const gif = weddingGifModules['/src/assets/projects/Wedding Flyer/01_compressed.gif'];
+              const gif = weddingGifModules['/src/assets/projects_new/Interactive wedding invitation/01_compressed.gif'];
               setWeddingGif(gif);
               setShowWeddingGif(true);
             }, 50);
@@ -121,7 +121,7 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
                 <>
                   {/* Show cover.png only when not showing GIF */}
                   <img
-                    src={new URL('../assets/projects/Wedding Flyer/Wedding Fyler Cover.png', import.meta.url).href}
+                    src={new URL('../assets/projects_new/Interactive wedding invitation/Wedding Fyler Cover.png', import.meta.url).href}
                     alt="Wedding Flyer Cover"
                     className={`absolute transition-all duration-500 z-10 w-full h-full max-w-full max-h-full object-contain ${showWeddingGif ? 'opacity-0' : 'opacity-100'}`}
                     style={{
@@ -229,6 +229,9 @@ const ParallaxCard = memo(function ParallaxCard({ project, index, onClick }) {
 // Memoized column offsets: left and right aligned, middle lower
 const columnOffsets = [0, 80, 0];
 
+// Column labels to clarify grouping for better UX
+const columnLabels = ['Digital / UX', 'Print & Identity', '3D & Visualization'];
+
 export default function ProjectGrid() {
   const containerRef = useRef(null);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -237,23 +240,37 @@ export default function ProjectGrid() {
   // Memoize columns computation
   const columns = useMemo(() => getProjectColumns(projects), []);
 
-  // Show only one "Coming Soon" placeholder if the 3D column has less than 3 projects
-  const column3 = columns[2];
-  if (column3.length < 3) {
-    column3.push({
-      id: 'coming-soon',
-      title: 'More Projects Coming Soon',
-      category: '3D Visualization',
-      description: 'New 3D work is in progress and will be added soon.',
-      image: null,
-      images: [],
-      color: 'from-gray-800/80 to-gray-900/80',
-      scrollSpeed: 1,
-      overlap: 0,
-      column: 2,
-      debug: 'placeholder',
-      isPlaceholder: true
-    });
+  // Show a single "More Projects Coming Soon" placeholder once,
+  // at the bottom of the currently shortest column for better balance
+  {
+    const placeholderId = 'coming-soon';
+    const hasPlaceholder = columns.some(col => col.some(p => p.id === placeholderId));
+    if (!hasPlaceholder) {
+      // Find index of shortest column
+      let shortestIndex = 0;
+      let minLength = columns[0]?.length ?? 0;
+      for (let i = 1; i < columns.length; i++) {
+        if ((columns[i]?.length ?? 0) < minLength) {
+          shortestIndex = i;
+          minLength = columns[i]?.length ?? 0;
+        }
+      }
+
+      columns[shortestIndex].push({
+        id: placeholderId,
+        title: 'More Projects Coming Soon',
+        category: '3D Visualization',
+        description: 'New work is in progress and will be added soon.',
+        image: null,
+        images: [],
+        color: 'from-gray-800/80 to-gray-900/80',
+        scrollSpeed: 1,
+        overlap: 0,
+        column: shortestIndex,
+        debug: 'placeholder',
+        isPlaceholder: true,
+      });
+    }
   }
 
   const handleProjectClick = useCallback((project) => {
@@ -314,6 +331,12 @@ export default function ProjectGrid() {
                 className="flex flex-col gap-2.5"
                 style={{ marginTop: columnOffsets[colIndex] }}
               >
+                {/* Column label - desktop only for clarity */}
+                <div className="mb-4 hidden md:block">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+                    {columnLabels[colIndex]}
+                  </span>
+                </div>
                 {column.map((project, i) => (
                   project.id === 'coming-soon' ? (
                       <div
@@ -324,28 +347,23 @@ export default function ProjectGrid() {
                       >
                         {/* Gradient effect from other grids with reduced opacity */}
                         <div className="absolute inset-0 bg-linear-to-br from-neutral-800/70 via-neutral-900/80 to-neutral-950/90" />
-                      <div className="flex flex-col items-center justify-center w-full h-full p-6 relative z-10">
-                        <span className="text-6xl md:text-7xl font-black text-white mb-4 flex items-center justify-center">
+                      <div className="flex flex-col items-center justify-center w-full h-full px-5 py-4 relative z-10">
+                        <span className="text-5xl md:text-6xl font-black text-white mb-2 flex items-center justify-center">
                           <svg xmlns='http://www.w3.org/2000/svg' className='inline-block h-12 w-12 mr-2' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' /></svg>
                         </span>
                         <h3
-                          className="font-sans font-bold text-white text-center mb-2 tracking-tight leading-none overflow-hidden text-ellipsis"
+                          className="font-sans font-bold text-white text-center mb-2 tracking-tight leading-none"
                           style={{
                             letterSpacing: '-0.03em',
-                            fontSize: 'clamp(1.1rem, 2vw + 1rem, 2.2rem)',
+                            fontSize: 'clamp(1rem, 2vw + 0.6rem, 1.6rem)',
                             lineHeight: '1.1',
                             maxWidth: '100%',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
                           }}
                           title={project.title}
                         >
                           {project.title}
                         </h3>
-                        <p className="text-base text-white/70 text-center font-sans font-normal mt-2 max-w-xs mx-auto">{project.description}</p>
+                        <p className="text-sm leading-snug text-white/70 text-center font-sans font-normal mt-1 max-w-xs mx-auto">{project.description}</p>
                       </div>
                     </div>
                   ) : (

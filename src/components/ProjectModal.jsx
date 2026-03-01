@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import MouseMousepadComparison from './MouseMousepadComparison';
+import ImageCompareSlider from './ImageCompareSlider';
 
 export default function ProjectModal({ project, isOpen, onClose }) {
     // Responsive: stack graphics above text for all screens below 1280px (landscape & portrait)
@@ -21,7 +22,6 @@ export default function ProjectModal({ project, isOpen, onClose }) {
   const loadedImagesRef = useRef({});
   const [isPaused, setIsPaused] = useState(false);
   const autoplayRef = useRef();
-  const [randomOrder, setRandomOrder] = useState([]);
 
   // Early return if project is null to prevent errors
 
@@ -34,8 +34,13 @@ export default function ProjectModal({ project, isOpen, onClose }) {
     setIsPaused(false);
   }, [project]);
 
-  // Autoplay effect (disabled for Wedding Flyer)
-  const isWeddingFlyer = project && project.title && project.title.trim().toLowerCase().includes('wedding flyer');
+  // Autoplay effect (disabled for Wedding Flyer / Interactive Wedding Invitation)
+  const isWeddingFlyer =
+    project &&
+    project.title &&
+    ['wedding flyer', 'interactive wedding invitation'].some((key) =>
+      project.title.trim().toLowerCase().includes(key)
+    );
   useEffect(() => {
     if (isWeddingFlyer) return;
     if (!isOpen || !project?.images?.length || project.images.length < 2 || isPaused) return;
@@ -43,10 +48,7 @@ export default function ProjectModal({ project, isOpen, onClose }) {
     let timeout = setTimeout(() => {
       setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
       autoplayRef.current = setInterval(() => {
-        setImageLoaded(false); // <-- trigger fade out before switching
-        setTimeout(() => {
-          setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
-        }, 100); // fade out for 100ms before switching
+        setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
       }, 2000);
     }, 1000); // 1 second for first image
     return () => {
@@ -71,14 +73,6 @@ export default function ProjectModal({ project, isOpen, onClose }) {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
       if (window.lenis) {
-      function getRandomOrder(length) {
-        const arr = Array.from({ length }, (_, i) => i);
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-      }
         window.lenis.start();
       }
     };
@@ -87,7 +81,6 @@ export default function ProjectModal({ project, isOpen, onClose }) {
 
   const handleNext = useCallback(() => {
     if (project?.images?.length > 1) {
-      setImageLoaded(false);
       setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
       setIsPaused(true); // manual override pauses autoplay
     }
@@ -95,35 +88,75 @@ export default function ProjectModal({ project, isOpen, onClose }) {
 
   const handlePrev = useCallback(() => {
     if (project?.images?.length > 1) {
-      setImageLoaded(false);
       setCurrentImageIndex((prev) => (prev - 1 + project.images.length) % project.images.length);
       setIsPaused(true); // manual override pauses autoplay
     }
   }, [project]);
 
-  const handleImageLoad = useCallback((e) => {
-    if (e && e.target && e.target.src) {
-      loadedImagesRef.current[e.target.src] = true;
+  const handleImageLoad = useCallback((src) => {
+    if (src) {
+      loadedImagesRef.current[src] = true;
     }
     setImageLoaded(true);
   }, []);
 
 
-  // For Wedding Flyer, always show the GIF as the only image, no autoplay
+  // For Wedding Flyer / Interactive Wedding Invitation, always show the GIF as the only image, no autoplay
   let hasMultipleImages = project.images?.length > 1;
   // Special sizing for Naturrausch Website
   const isNaturrausch = project && project.title && project.title.trim().toLowerCase().includes('naturrausch');
   let imagesToShow = [];
   if (isWeddingFlyer) {
     // Use Vite static import for GIF
-    const gifModules = import.meta.glob('/src/assets/projects/Wedding Flyer/01_compressed.gif', { eager: true, import: 'default' });
-    imagesToShow = [gifModules['/src/assets/projects/Wedding Flyer/01_compressed.gif']];
+    const gifModules = import.meta.glob('/src/assets/projects_new/Interactive wedding invitation/01_compressed.gif', { eager: true, import: 'default' });
+    imagesToShow = [gifModules['/src/assets/projects_new/Interactive wedding invitation/01_compressed.gif']];
     hasMultipleImages = false;
   } else if (project.images && project.images.length > 0) {
     imagesToShow = project.images;
   } else if (project.image) {
     imagesToShow = [project.image];
   }
+
+  // Keep track of which images are already loaded so we only show
+  // the loading spinner the first time each image appears.
+  useEffect(() => {
+    if (!imagesToShow.length) return;
+    const currentSrc = imagesToShow[currentImageIndex];
+    if (loadedImagesRef.current[currentSrc]) {
+      setImageLoaded(true);
+    } else {
+      setImageLoaded(false);
+    }
+  }, [currentImageIndex, imagesToShow]);
+
+  // Preload all images for the current project so that upcoming
+  // slides are fetched in the background while the user views
+  // the current one. This makes switches feel instant instead
+  // of waiting for the network when the index changes.
+  useEffect(() => {
+    if (!isOpen || !imagesToShow.length) return;
+
+    imagesToShow.forEach((src) => {
+      if (!src || loadedImagesRef.current[src]) return;
+
+      const img = new Image();
+      img.src = src;
+
+      if (img.complete) {
+        loadedImagesRef.current[src] = true;
+        if (src === imagesToShow[currentImageIndex]) {
+          setImageLoaded(true);
+        }
+      } else {
+        img.onload = () => {
+          loadedImagesRef.current[src] = true;
+          if (src === imagesToShow[currentImageIndex]) {
+            setImageLoaded(true);
+          }
+        };
+      }
+    });
+  }, [isOpen, imagesToShow, currentImageIndex]);
 
   return (
       <AnimatePresence>
@@ -170,36 +203,66 @@ export default function ProjectModal({ project, isOpen, onClose }) {
               {/* Graphics above text for tablet/mobile */}
               <div className={`w-full ${isStacked ? '' : 'xl:w-1/2'} flex items-center justify-center p-2 xl:p-8 rounded-t-2xl min-h-0`} style={{minHeight: '220px', height: '70vh', maxHeight: '80vh', justifyContent: 'center', alignItems: 'center'}}>
                 {/* Mouse + Mousepad 3D Render: comparison slider */}
-                {project.title && project.title.trim().toLowerCase().includes('mouse + mousepad 3d render') ? (
+                {project.slider ? (
                   <div className="w-full h-full flex items-center justify-center" style={{justifyContent: 'center', alignItems: 'center'}}>
-                    <MouseMousepadComparison />
+                    <ImageCompareSlider
+                      leftImage={
+                        // For Photorealistic 3D Reconstruction, force JPEGs from the slider subfolder
+                        (project.id === 4
+                          ? new URL('../assets/projects_new/Photorealistic 3D Reconstruction/slider/slide_left.jpg', import.meta.url).href
+                          : (
+                              project.sliderImages?.find(img => {
+                                const base = img.split('/').pop().split('.')[0].toLowerCase();
+                                return base === project.slider.leftImage.split('.')[0].toLowerCase();
+                              }) ||
+                              project.sliderImages?.find(img => img.toLowerCase().includes(project.slider.leftImage.toLowerCase().replace(/\.[a-z]+$/, '')))
+                              || project.images?.find(img => {
+                                const base = img.split('/').pop().split('.')[0].toLowerCase();
+                                return base === project.slider.leftImage.split('.')[0].toLowerCase();
+                              }) ||
+                              project.images?.find(img => img.toLowerCase().includes(project.slider.leftImage.toLowerCase().replace(/\.[a-z]+$/, '')))
+                              || project.sliderImages?.[0] || project.images?.[0]
+                            )
+                        )
+                      }
+                      rightImage={
+                        (project.id === 4
+                          ? new URL('../assets/projects_new/Photorealistic 3D Reconstruction/slider/slide_right.jpg', import.meta.url).href
+                          : (
+                              project.sliderImages?.find(img => {
+                                const base = img.split('/').pop().split('.')[0].toLowerCase();
+                                return base === project.slider.rightImage.split('.')[0].toLowerCase();
+                              }) ||
+                              project.sliderImages?.find(img => img.toLowerCase().includes(project.slider.rightImage.toLowerCase().replace(/\.[a-z]+$/, '')))
+                              || project.images?.find(img => {
+                                const base = img.split('/').pop().split('.')[0].toLowerCase();
+                                return base === project.slider.rightImage.split('.')[0].toLowerCase();
+                              }) ||
+                              project.images?.find(img => img.toLowerCase().includes(project.slider.rightImage.toLowerCase().replace(/\.[a-z]+$/, '')))
+                              || project.sliderImages?.[1] || project.images?.[1]
+                            )
+                        )
+                      }
+                      leftLabel={project.slider.leftLabel}
+                      rightLabel={project.slider.rightLabel}
+                    />
                   </div>
                 ) : (
                   <div className="relative w-full h-full flex items-center justify-center" style={{width: '100%', height: '100%', minHeight: '220px', maxHeight: '80vh'}}>
                     {imagesToShow.map((img, idx) => {
                       const isActive = currentImageIndex === idx;
-                      useEffect(() => {
-                        if (isActive) {
-                          const imgEl = document.createElement('img');
-                          imgEl.src = img;
-                          if (imgEl.complete) {
-                            loadedImagesRef.current[img] = true;
-                            setImageLoaded(true);
-                          }
-                        }
-                      }, [img, isActive]);
                       return (
                         <img
                           key={img}
                           src={img}
                           alt={project.title}
-                          onLoad={isActive ? handleImageLoad : undefined}
+                          onLoad={isActive ? () => handleImageLoad(img) : undefined}
                           className={
                             `object-contain absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 will-change-opacity bg-black rounded-2xl ` +
                             (isNaturrausch ? 'w-full z-20' : 'w-full z-10') +
                             `${isActive && imageLoaded ? ' opacity-100' : ' opacity-0'}`
                           }
-                          style={{ pointerEvents: 'none', width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', minWidth: '320px', minHeight: '180px', background: 'black', display: 'block' }}
+                          style={{ pointerEvents: 'none', width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', minHeight: '180px', background: 'black', display: 'block' }}
                         />
                       );
                     })}
@@ -229,7 +292,10 @@ export default function ProjectModal({ project, isOpen, onClose }) {
                     transition={{ delay: 0.3 }}
                     className="text-[10px] uppercase tracking-[0.4em] text-accent"
                   >
-                    {project.category}
+                    {/* If category is id: [number] or [number], use next line from description */}
+                    {(/^id:\s*\d+$/i.test(project.category) || /^\[number\]$/i.test(project.category))
+                      ? (project.description?.split('\n')[0] || '')
+                      : project.category}
                   </motion.span>
 
                   <motion.h1
@@ -400,13 +466,19 @@ export default function ProjectModal({ project, isOpen, onClose }) {
                                     <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">Click</span>
                                   </motion.div>
                                 </div>
-                                {/* Dashboard Prototype login hint */}
-                                {project.title && project.title.trim().toLowerCase().includes('dashboard prototype') && (
-                                  <div className="mt-4 text-xs text-white/50 text-center max-w-xs">
-                                    Note: This demo website only requires <span className="text-accent">dummy logins</span> – please do not use any real credentials.
-                                  </div>
-                                )}
                               </div>
+                            )}
+                            {/* Always show login hint if present */}
+                            {project.hint && (
+                              <div
+                                className="mt-10 text-xs text-white/50 text-center max-w-xs mx-auto"
+                                dangerouslySetInnerHTML={{
+                                  __html:
+                                    typeof project.hint === 'string'
+                                      ? project.hint.replace(/(dummy logins)/i, '<span class=\"text-accent\">$1</span>')
+                                      : project.hint
+                                }}
+                              />
                             )}
                           </div>
                         </>

@@ -13,9 +13,13 @@ export default function Layout({ children }) {
   const heroHeightRef = useRef(0);
   const docHeightRef = useRef(0);
 
-  // Scroll to top function
+  // Scroll to top function (integrated with Lenis smooth scrolling)
   const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.lenis) {
+      window.lenis.scrollTo(0, { immediate: false });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, []);
 
   // Memoized menu items
@@ -160,20 +164,31 @@ export default function Layout({ children }) {
         whileTap={{ scale: 0.95 }}
         aria-label="Toggle menu"
       >
-        <div className="flex flex-col gap-1.5">
-          <motion.span
-            className="block h-0.5 w-5 bg-white origin-center"
-            animate={mobileMenuOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
-          />
-          <motion.span
-            className="block h-0.5 w-5 bg-white"
-            animate={mobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-          />
-          <motion.span
-            className="block h-0.5 w-5 bg-white origin-center"
-            animate={mobileMenuOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 0 }}
-          />
-        </div>
+        {mobileMenuOpen ? (
+          <motion.svg
+            initial={{ rotate: -90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className="h-6 w-6 text-white/70"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 18L18 6M6 6l12 12"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </motion.svg>
+        ) : (
+          <div className="flex flex-col gap-1.5">
+            <span className="block h-0.5 w-5 bg-white origin-center" />
+            <span className="block h-0.5 w-5 bg-white" />
+            <span className="block h-0.5 w-5 bg-white origin-center" />
+          </div>
+        )}
       </motion.button>
 
       {/* Mobile Menu Overlay */}

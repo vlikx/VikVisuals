@@ -1,8 +1,0 @@
-Project: INTERACTIVE WEDDING INVITATION
-
-- The Brief: Create a custom, high-end wedding invitation for a friend featuring a unique "Sliding Reveal" mechanism.
-- The Idea: Designed an interactive physical experience where sliding the card open physically moves the bride illustration toward the groom, symbolizing their union.
--Aesthetic: Elegant floral themes combined with custom character illustrations, blending traditional warmth with modern interactive design.
-- Full-Cycle Design: Handled everything from initial character assets and layout to final print-ready production files.
-- Production Management: Managed the end-to-end process, including rigorous color proofing and direct coordination with professional print services for final delivery.
-- Vision + Value: Balanced intricate manual craftsmanship with professional print data standards to deliver a high-quality, personalized product that exceeded client expectations.
