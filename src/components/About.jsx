@@ -13,7 +13,7 @@ import MusicIcon from '../assets/Interests/Music.svg';
 const infoData = [
   { label: 'FOCUS', value: 'GATHERING EXPERIENCE' },
   { label: 'CURRENTLY', value: 'UX STUDENT HS AALEN // WORKING @ MERCEDES-BENZ' },
-  { label: 'BACKGROUND', value: 'TRAINING AS A MEDIA DESIGNER // DIPLOMA IN GAME ART & 3D ANIMATION' },
+  { label: 'BACKGROUND', value: 'TRAINED MEDIA DESIGNER // DIPLOMA IN GAME ART & 3D ANIMATION' },
   { label: 'LOCATION // AGE', value: 'ESSLINGEN AM NECKAR // 26' },
   { label: 'INTERESTS', value: 'TRAVEL, GAMING, PHOTOGRAPHY, FITNESS, FESTIVALS' },
   { label: 'PETS', value: null },
