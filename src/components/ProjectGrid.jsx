@@ -331,9 +331,9 @@ export default function ProjectGrid() {
                 className="flex flex-col gap-2.5"
                 style={{ marginTop: columnOffsets[colIndex] }}
               >
-                {/* Column label - desktop only for clarity */}
-                <div className="mb-4 hidden md:block">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+                {/* Column label - now also visible on mobile */}
+                <div className="mb-3 md:mb-4">
+                  <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-white/40">
                     {columnLabels[colIndex]}
                   </span>
                 </div>

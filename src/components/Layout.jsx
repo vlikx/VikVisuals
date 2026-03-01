@@ -125,7 +125,7 @@ export default function Layout({ children }) {
         <CustomCursor />
       </div>
 
-      {/* Header - Hidden in hero, appears on scroll */}
+      {/* Header - Hidden in hero, appears on scroll (desktop/tablet) */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: headerVisible ? 0 : -100 }}
@@ -157,39 +157,54 @@ export default function Layout({ children }) {
         </div>
       </motion.header>
 
-      {/* Mobile Menu Button */}
-      <motion.button
-        className="fixed right-6 top-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/80 backdrop-blur-sm md:hidden will-change-transform"
-        onClick={toggleMobileMenu}
-        whileTap={{ scale: 0.95 }}
-        aria-label="Toggle menu"
+      {/* Mobile Header (logo + menu button) */}
+      <motion.header
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between bg-black/90 px-6 py-4 backdrop-blur-sm md:hidden"
       >
-        {mobileMenuOpen ? (
-          <motion.svg
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            className="h-6 w-6 text-white/70"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M6 18L18 6M6 6l12 12"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </motion.svg>
-        ) : (
-          <div className="flex flex-col gap-1.5">
-            <span className="block h-0.5 w-5 bg-white origin-center" />
-            <span className="block h-0.5 w-5 bg-white" />
-            <span className="block h-0.5 w-5 bg-white origin-center" />
-          </div>
-        )}
-      </motion.button>
+        {/* Mobile Logo */}
+        <a href="/" className="group flex items-center gap-3">
+          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/60 transition-colors group-hover:text-white">
+            vikvisuals
+          </span>
+        </a>
+
+        {/* Mobile Menu Button */}
+        <motion.button
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/80 backdrop-blur-sm will-change-transform"
+          onClick={toggleMobileMenu}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? (
+            <motion.svg
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              className="h-6 w-6 text-white/70"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 18L18 6M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </motion.svg>
+          ) : (
+            <div className="flex flex-col gap-1.5">
+              <span className="block h-0.5 w-5 bg-white origin-center" />
+              <span className="block h-0.5 w-5 bg-white" />
+              <span className="block h-0.5 w-5 bg-white origin-center" />
+            </div>
+          )}
+        </motion.button>
+      </motion.header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -223,20 +238,6 @@ export default function Layout({ children }) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Mobile Logo - Fixed Corner */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="fixed left-6 top-6 z-30 md:hidden"
-      >
-        <a href="/" className="group flex items-center gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/40 transition-colors group-hover:text-white">
-            vikvisuals
-          </span>
-        </a>
-      </motion.div>
 
       {/* Main Content */}
       <main>{children}</main>
