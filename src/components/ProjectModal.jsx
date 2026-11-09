@@ -177,19 +177,6 @@ export default function ProjectModal({ project, isOpen, onClose }) {
               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
             />
 
-            {/* Close Button */}
-            <motion.button
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              onClick={onClose}
-              className="fixed top-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/60 transition-all hover:border-white/40 hover:text-white hover:scale-110"
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </motion.button>
-
             {/* Main Modal Content: Responsive layout */}
             <motion.div
               initial={{ opacity: 0, y: 60 }}
@@ -281,6 +268,18 @@ export default function ProjectModal({ project, isOpen, onClose }) {
 
               {/* Text below graphics for tablet/mobile */}
               <div className={`w-full ${isStacked ? '' : 'xl:w-1/2'} flex flex-col justify-start p-2 xl:p-8 pb-10 md:pb-12 min-h-0`}>
+              <motion.button
+                type="button"
+                onClick={onClose}
+                whileHover={{ x: -4 }}
+                whileTap={{ scale: 0.96 }}
+                className="mb-10 flex w-fit items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-white/50 transition-colors hover:text-accent"
+                aria-label="Back to projects"
+              >
+                <span className="text-lg leading-none">←</span>
+                <span>Back to projects</span>
+              </motion.button>
+
               {/* Header Row */}
               <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                 {/* Title & Category */}

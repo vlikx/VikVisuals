@@ -105,6 +105,11 @@
   .animate-shimmer {
     animation: shimmer 1.5s ease-in-out infinite;
   }
+
+  .deferred-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
 }
 
 @layer utilities {

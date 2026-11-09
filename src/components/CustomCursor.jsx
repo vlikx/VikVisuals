@@ -1,26 +1,15 @@
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { useEffect, useState, useCallback, memo } from 'react';
 
 const CustomCursor = memo(function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
   const [cursorText, setCursorText] = useState('');
+  const [cursorMode, setCursorMode] = useState('default');
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Faster spring physics for the cursor (less lag)
-  const springConfig = { damping: 15, stiffness: 700, mass: 0.4 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
-
-  // Outer ring: reduce lag, make more responsive
-  // Smoother trailing effect for outer ring
-  const outerSpringConfig = { damping: 30, stiffness: 120, mass: 1.2 };
-  const outerXSpring = useSpring(cursorX, outerSpringConfig);
-  const outerYSpring = useSpring(cursorY, outerSpringConfig);
-
-  // Memoized event handlers
   const moveCursor = useCallback((e) => {
     cursorX.set(e.clientX);
     cursorY.set(e.clientY);
@@ -50,19 +39,22 @@ const CustomCursor = memo(function CustomCursor() {
     }
 
     if (isProject || isLinkedView) {
+      if (cursorMode !== 'view') setCursorMode('view');
       setIsHovering(true);
       setCursorText('VIEW');
       setIsPointer(false);
     } else if (isClickable) {
+      if (cursorMode !== 'pointer') setCursorMode('pointer');
       setIsPointer(true);
       setIsHovering(false);
       setCursorText('');
     } else {
+      if (cursorMode !== 'default') setCursorMode('default');
       setIsPointer(false);
       setIsHovering(false);
       setCursorText('');
     }
-  }, []);
+  }, [cursorMode]);
 
   useEffect(() => {
     window.addEventListener('mousemove', moveCursor, { passive: true });
@@ -80,20 +72,22 @@ const CustomCursor = memo(function CustomCursor() {
       <motion.div
         className="pointer-events-none fixed left-0 top-0 z-9999 mix-blend-difference will-change-transform"
         style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
+          x: cursorX,
+          y: cursorY,
           willChange: 'transform',
         }}
       >
         <motion.div
           className="relative flex items-center justify-center will-change-transform"
+          style={{ perspective: 600, transformStyle: 'preserve-3d' }}
           animate={{
             width: isHovering ? 120 : isPointer ? 40 : 12,
             height: isHovering ? 120 : isPointer ? 40 : 12,
             x: isHovering ? -60 : isPointer ? -20 : -6,
             y: isHovering ? -60 : isPointer ? -20 : -6,
+            rotateY: cursorMode === 'view' ? 180 : cursorMode === 'pointer' ? 90 : 0,
           }}
-          transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+          transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         >
           {/* Lens effect background */}
           <motion.div
@@ -107,6 +101,7 @@ const CustomCursor = memo(function CustomCursor() {
             animate={{
               scale: isHovering ? 1 : 0,
             }}
+            transition={{ duration: 0 }}
           />
           
           {/* Core dot */}
@@ -116,37 +111,39 @@ const CustomCursor = memo(function CustomCursor() {
               width: isHovering ? 0 : isPointer ? 8 : 12,
               height: isHovering ? 0 : isPointer ? 8 : 12,
             }}
+            transition={{ duration: 0 }}
           />
 
           {/* Hover text */}
           {cursorText && (
-            <motion.span
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
+            <span
               className="absolute text-[10px] font-bold uppercase tracking-widest text-white"
+              style={{ transform: cursorMode === 'view' ? 'rotateY(180deg)' : 'none' }}
             >
               {cursorText}
-            </motion.span>
+            </span>
           )}
         </motion.div>
       </motion.div>
 
-      {/* Outer ring - follows with delay */}
+      {/* Outer ring stays aligned with the pointer */}
       <motion.div
         className="pointer-events-none fixed left-0 top-0 z-9998 will-change-transform"
         style={{
-          x: outerXSpring,
-          y: outerYSpring,
+          x: cursorX,
+          y: cursorY,
           willChange: 'transform',
         }}
       >
         <motion.div
           className="rounded-full will-change-transform"
+          style={{ transformStyle: 'preserve-3d' }}
           animate={{
             width: isHovering ? 150 : isPointer ? 50 : 40,
             height: isHovering ? 150 : isPointer ? 50 : 40,
             x: isHovering ? -75 : isPointer ? -25 : -20,
             y: isHovering ? -75 : isPointer ? -25 : -20,
+            rotateY: cursorMode === 'view' ? 180 : cursorMode === 'pointer' ? 90 : 0,
             boxShadow: isHovering
               ? '0 0 0 4px rgba(0,212,255,0.7), 0 0 32px 8px rgba(0,212,255,0.25)'
               : 'none',
@@ -154,7 +151,7 @@ const CustomCursor = memo(function CustomCursor() {
               ? '3px solid rgba(0,212,255,0.85)'
               : '1px solid rgba(255,255,255,0.2)',
           }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         />
       </motion.div>
 

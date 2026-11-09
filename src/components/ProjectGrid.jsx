@@ -234,6 +234,8 @@ const columnLabels = ['Digital / UX', 'Print & Identity', '3D & Visualization'];
 
 export default function ProjectGrid() {
   const containerRef = useRef(null);
+  const modalHistoryRef = useRef(false);
+  const projectScrollPositionRef = useRef(0);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -274,14 +276,49 @@ export default function ProjectGrid() {
   }
 
   const handleProjectClick = useCallback((project) => {
+    projectScrollPositionRef.current = window.scrollY;
     setSelectedProject(project);
     setIsModalOpen(true);
   }, []);
 
+  const restoreProjectScrollPosition = useCallback(() => {
+    const scrollPosition = projectScrollPositionRef.current;
+    requestAnimationFrame(() => {
+      if (window.lenis) {
+        window.lenis.scrollTo(scrollPosition, { immediate: true });
+      } else {
+        window.scrollTo({ top: scrollPosition, behavior: 'instant' });
+      }
+    });
+  }, []);
+
   const handleCloseModal = useCallback(() => {
+    if (modalHistoryRef.current && window.history.state?.projectModal) {
+      window.history.back();
+      return;
+    }
+
     setIsModalOpen(false);
     setSelectedProject(null);
-  }, []);
+    restoreProjectScrollPosition();
+  }, [restoreProjectScrollPosition]);
+
+  useEffect(() => {
+    if (!isModalOpen || modalHistoryRef.current) return;
+
+    window.history.pushState({ ...(window.history.state || {}), projectModal: true }, '');
+    modalHistoryRef.current = true;
+
+    const handlePopState = () => {
+      modalHistoryRef.current = false;
+      setIsModalOpen(false);
+      setSelectedProject(null);
+      restoreProjectScrollPosition();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isModalOpen, restoreProjectScrollPosition]);
 
   return (
     <section id="work" ref={containerRef} className="relative w-full py-32 bg-black overflow-hidden">

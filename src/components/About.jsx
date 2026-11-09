@@ -87,7 +87,7 @@ export default function About() {
   // ...existing code...
 
   return (
-    <section id="about" className="relative px-6 py-32 md:px-12 lg:px-16">
+    <section id="about" className="deferred-section relative px-6 py-32 md:px-12 lg:px-16">
       <div className="mx-auto max-w-7xl">
         <motion.div
           variants={fadeInUp}
@@ -112,6 +112,8 @@ export default function About() {
               src={PortraitVS}
               alt="Viktor Stang Portrait"
               className="object-cover w-full h-full rounded-full shadow-md border border-white/10 group-hover:scale-105 transition-transform duration-300"
+              fetchPriority="high"
+              decoding="async"
               style={{ boxShadow: '0 4px 16px 0 rgba(0,0,0,0.25)' }}
             />
             {/* Accent border overlay */}
