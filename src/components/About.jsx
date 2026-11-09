@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import SkillBlockBar from './SkillBlockBar';
 import PortraitVS from '../assets/Portrait_VS.jpg';
 import MochiPaw from '../assets/cats/Mochi.svg';
@@ -14,7 +15,7 @@ const infoData = [
   { label: 'FOCUS', value: 'GATHERING EXPERIENCE' },
   { label: 'CURRENTLY', value: 'UX STUDENT HS AALEN // WORKING @ MERCEDES-BENZ' },
   { label: 'BACKGROUND', value: 'TRAINED MEDIA DESIGNER // DIPLOMA IN GAME ART & 3D ANIMATION' },
-  { label: 'LOCATION // AGE', value: 'ESSLINGEN AM NECKAR // 26' },
+  { label: 'LOCATION // AGE', value: 'ESSLINGEN AM NECKAR // 27' },
   { label: 'INTERESTS', value: 'TRAVEL, GAMING, PHOTOGRAPHY, FITNESS, FESTIVALS' },
   { label: 'PETS', value: null },
 ];
@@ -84,7 +85,23 @@ const fadeInUp = {
 export default function About() {
   const [showPortraitModal, setShowPortraitModal] = useState(false);
 
-  // ...existing code...
+  useEffect(() => {
+    if (!showPortraitModal) return undefined;
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') setShowPortraitModal(false);
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.body.style.overflow = 'hidden';
+    window.lenis?.stop();
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+      window.lenis?.start();
+    };
+  }, [showPortraitModal]);
 
   return (
     <section id="about" className="deferred-section relative px-6 py-32 md:px-12 lg:px-16">
@@ -153,7 +170,7 @@ export default function About() {
 
         {/* No extra paragraph block; key info is integrated into the STATUS tiles below. */}
         {/* Portrait Modal */}
-        {showPortraitModal && (
+        {showPortraitModal && createPortal(
           <motion.div
             initial={{ opacity: 0, scale: 0.7 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -183,7 +200,8 @@ export default function About() {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
         {/* Info Grid - Technical Readout */}
         <div className="mb-32 grid grid-cols-2 gap-px bg-white/10 md:grid-cols-4">
